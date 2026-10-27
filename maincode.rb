@@ -35,4 +35,4 @@ File.open("config.yml", "w") do |file|
   file.write(YAML.dump(data))
 end
 
-puts "YAML file updated!sdfdsdsffsd"
+puts "YAML file updated!.. "
