@@ -1,9 +1,46 @@
 models:
-  - name: "Model_Axe"
-    format: "fbx"
-    path: "/assets/models/axe.fbx"
-    active: true
-  - name: "Model_Blaster"
-    format: "obj"
-    path: "/assets/models/blaster.obj"
-    active: true
+  - id: 1
+    title: "Axe Model"
+    base_price: 150.0
+  - id: 2
+    title: "Blaster Model"
+    base_price: 300.5
+  - id: 3
+    title: "Sword Model"
+    base_price: 220.0
+  - id: 4
+    title: "Shield Model"
+    base_price: 180.0
+  - id: 5
+    title: "Helmet Model"
+    base_price: 130.0
+  - id: 6
+    title: "Armor Chest"
+    base_price: 450.0
+  - id: 7
+    title: "Boots Model"
+    base_price: 90.0
+  - id: 8
+    title: "Bow Model"
+    base_price: 200.0
+  - id: 9
+    title: "Crossbow Model"
+    base_price: 260.0
+  - id: 10
+    title: "Dagger Model"
+    base_price: 110.0
+  - id: 11
+    title: "Spear Model"
+    base_price: 195.0
+  - id: 12
+    title: "Hammer Model"
+    base_price: 280.0
+  - id: 13
+    title: "Staff Model"
+    base_price: 340.0
+  - id: 14
+    title: "Pistol Model"
+    base_price: 250.0
+  - id: 15
+    title: "Grenade Model"
+    base_price: 75.0
