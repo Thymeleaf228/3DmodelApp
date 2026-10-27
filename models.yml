@@ -1,0 +1,9 @@
+models:
+  - name: "Model_Axe"
+    format: "fbx"
+    path: "/assets/models/axe.fbx"
+    active: true
+  - name: "Model_Blaster"
+    format: "obj"
+    path: "/assets/models/blaster.obj"
+    active: true
