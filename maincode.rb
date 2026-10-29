@@ -1,38 +1,42 @@
-require 'yaml'
-
-user_profile = {
-  "name" => "Alice",
-  "age" => 30,
-  "skills" => ["Ruby", "HTML", "SQL"],
-  "settings" => {
-    "theme" => "dark",
-    "notifications" => true
-  }
-}
-
-File.open("config.yml", "w") do |file|
-  file.write(YAML.dump(user_profile))
+require_relative 'signup'
+require_relative 'login'
+ 
+def print_main_menu
+  puts "Вітаємо у магазині PrintForge!\n\n" +
+  "Різноманітні 3D-моделі та матеріали на ваш смак\n" +
+  "Звертайтесь до PrintForge!\n" +
+  "Оберіть дію:\n" +
+  "  1 - log in\n" +
+  "  2 - sign up\n" +
+  "  3 - exit"  
 end
 
-puts "YAML file created successfully!"
+def run
+  print_main_menu
+  puts "\n"
+  user_action = gets.chomp
+  case user_action
+  when "1"
+    system('clear') || system('cls')  
+    unless log_in_user
+      puts "\n"
+      puts "--------------------------------------------"
+      puts "  Такого юзера не знайдено. Зареєструйтеся"
+      puts "--------------------------------------------"
+      puts "\n\n"
+    end
+    
+    # показувати меню користувача
+  when "2"
+    sign_up_user
+    # system('clear') || system('cls')
 
-#-----
-
-data = YAML.load_file("config.yml")
-
-puts "User Name: #{data['name']}"
-puts "First Skill: #{data['skills'].first}"
-puts "Theme Preference: #{data['settings']['theme']}"
-
-#-----
-
-data = YAML.load_file("config.yml")
-
-data["age"] = 31
-data["skills"] << "CSS"
-
-File.open("config.yml", "w") do |file|
-  file.write(YAML.dump(data))
+  when "3"
+    system('clear') || system('cls')
+    puts "Дякуємо, звертайтеся до нас ще!\n\n\n"
+    exit
+  end
+  run
 end
 
-puts "YAML file updated!"
+run
