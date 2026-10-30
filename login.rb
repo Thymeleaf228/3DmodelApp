@@ -10,9 +10,9 @@ def log_in_user
   hash_from_db = user.nil? ? nil : user['password_digest']
 
   if is_password_correct(hash_from_db, password) 
-    return true
+    return user
   end
-  false
+  nil
 end
 
 def is_password_correct (hash_from_db, password)
