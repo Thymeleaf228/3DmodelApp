@@ -11,7 +11,7 @@ def sign_up_user
   system('clear') || system('cls')
   users = load_users
   if users.any? { |user| user['phone'] == phone }
-    puts "Помилка: Користувач із телефоном #{phone} вже зареєстрований!"
+    puts "Помилка: Користвач із телефоном #{phone} вже зареєстрований!"
   else
     puts "--- Реєструємо... ---"
     register_user(name, phone, password)
