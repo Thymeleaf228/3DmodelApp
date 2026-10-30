@@ -1,8 +1,8 @@
 require 'yaml'
 
 def print_report
-  models_path = '\db\models.yml'
-  materials_path = '\db\materials.yml'
+  models_path = 'models.yml'
+  materials_path = 'materials.yml'
 
   models_data = load_yaml(models_path)
   materials_data = load_yaml(materials_path)
