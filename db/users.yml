@@ -1,0 +1,6 @@
+---
+- id: 1
+  name: '1'
+  phone: '1'
+  password_digest: "$2a$12$36h.NVXV3TTvKg6hbOE/q.bCAcHMKPteUNYFOZj6qZfjvoDpHZI/2"
+  role: user

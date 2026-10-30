@@ -1,0 +1,16 @@
+materials:
+  - id: 1
+    name: "Rusty Iron"
+    extra_price: 25.0
+  - id: 2
+    name: "Polished Wood"
+    extra_price: 15.5
+  - id: 3
+    name: "Gold Plated"
+    extra_price: 120.0
+  - id: 4
+    name: "Carbon Fiber"
+    extra_price: 85.0
+  - id: 5
+    name: "Matte Plastic"
+    extra_price: 10.0
