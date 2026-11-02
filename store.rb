@@ -10,12 +10,10 @@ def load_data(filename)
   end
 end
 
-# Сохранение каждого товара из корзины по новой схеме
 def save_order_to_file(order_items, user_id)
   orders = load_data(ORDERS_FILE)
   orders = [] unless orders.is_a?(Array)
   
-  # Находим последний ID или начинаем с 1
   next_id = orders.empty? ? 1 : (orders.map { |o| o['id'] || 0 }.max + 1)
 
   order_items.each do |item|
@@ -28,7 +26,7 @@ def save_order_to_file(order_items, user_id)
       'size' => item['size'],
       'quantity' => item['quantity'],
       'final_price' => item['total'],
-      'status' => 'Новий'
+      'status' => 'new' # Статус маленькими английскими буквами
     }
     orders << order_record
     next_id += 1
@@ -132,7 +130,6 @@ def add_to_cart(cart)
     return cart
   end
 
-  # Дополнительные параметры из новой схемы: цвет и размер
   print "Введіть колір товару: "
   color_input = gets.chomp
 
@@ -205,11 +202,10 @@ def manage_cart(cart, username)
 
   case action
   when "1"
-    # Передаем имя пользователя (или ID, если сохраняется имя)
     save_order_to_file(cart, username)
-    puts "\n[✓] Замовлення успішно оформлено та збережено у файл orders.yml за новою схемою!"
-    puts "Дякуємо за покупку!"
-    sleep(2.5)
+    puts "\n[✓] Замовлення успішно оформлено!"
+    puts "Дякуємо за покупку в PrintForge!"
+    sleep(2)
     [] 
   when "2"
     print "Введіть номер товару для видалення: "
