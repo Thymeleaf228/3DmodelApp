@@ -6,7 +6,7 @@ require_relative 'admin-panel'
 def print_main_menu
   puts "Вітаємо у магазині PrintForge!\n\n" +
   "Різноманітні 3D-моделі та матеріали на ваш смак\n" +
-  "Звертайтесь до PrintForge!\n" +
+  "Звертайтесь до PrintForge!\n\n" +
   "Оберіть дію:\n" +
   "  1 - log in\n" +
   "  2 - sign up\n" +
@@ -32,8 +32,10 @@ def run
     when "admin"
       # викликаємо інтерфейс адміна
       admin_panel(user)
-      run_admin_panel(user)
-      return
+      loop do
+        result_for_admin_panel = run_admin_panel(user)
+        break if result_for_admin_panel == :back
+      end
     else
       puts "\nНевідома роль користувача\n\n"
       exit
@@ -55,23 +57,6 @@ def print_user_not_found
   puts "  Такого юзера не знайдено. Зареєструйтеся"
   puts "--------------------------------------------"
   puts "\n"      
-end
-
-def run_admin_panel(user)
-  print_admin_menu(user)
-  puts "\n"
-  admin_action = gets.chomp
-  case admin_action
-  when "1"
-    #переглянути усі замовлення
-    system('clear') || system('cls')
-    orders_list
-  when "2"
-    #зміна статусів замовлення
-  when "3"
-    #повернутись у main menu
-    run
-  end
 end
 
 loop do
