@@ -1,7 +1,7 @@
 require 'bcrypt'
 require 'yaml'
 
-DB_FILE = 'users.yml'
+USERS_DB_FILE = 'users.yml'
 
 
 def sign_up_user
@@ -11,19 +11,16 @@ def sign_up_user
   system('clear') || system('cls')
   users = load_users
   if users.any? { |user| user['phone'] == phone }
-    puts "Помилка: Користвач із телефоном #{phone} вже зареєстрований!"
+    puts "Помилка: Користувач із телефоном #{phone} вже зареєстрований!"
   else
     puts "--- Реєструємо... ---"
-    register_user(name, phone, password)
+    register_user(users, name, phone, password)
   end
 end
 
 
-def register_user(name, phone, password)
-  users = load_users
-
-  next_id = users.empty? ? 1 : users.map { |user| user['id'] }.max + 1
-
+def register_user(users, name, phone, password)
+  next_id = users.any? ? 1 : users.map { |user| user['id'] }.max + 1
   hashed_password = BCrypt::Password.create(password)
 
   new_user = {
@@ -36,12 +33,9 @@ def register_user(name, phone, password)
 
   users << new_user
 
-  File.open(DB_FILE, 'w') do |file|
-    file.write(users.to_yaml)
-  end
+  File.write(USERS_DB_FILE, users.to_yaml)
 
   puts "Користувач #{name} успішно зареєстрований!\n\n"
-
 end
 
 
@@ -50,8 +44,8 @@ end
 
 
 def load_users
-  if File.exist?(DB_FILE)
-    YAML.load_file(DB_FILE) || []
+  if File.exist?(USERS_DB_FILE)
+    YAML.load_file(USERS_DB_FILE) || []
   else
     []
   end

@@ -7,15 +7,16 @@ def log_in_user
 
   users = load_users
   user = users.find { |user| user['phone'] == phone }
-  hash_from_db = user.nil? ? nil : user['password_digest']
+  return nil if user.nil?
 
-  if is_password_correct(hash_from_db, password) 
+  if is_password_correct(user, password)  
     return user
   end
   nil
 end
 
-def is_password_correct (hash_from_db, password)
+def is_password_correct (user, password)
+  hash_from_db = user.nil? ? nil : user['password_digest']
   if hash_from_db == nil
     return false
   end

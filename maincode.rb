@@ -1,15 +1,16 @@
 require_relative 'signup'
 require_relative 'login'
 require_relative 'store'
-
+require_relative 'admin-panel'
+ 
 def print_main_menu
   puts "Вітаємо у магазині PrintForge!\n\n" +
   "Різноманітні 3D-моделі та матеріали на ваш смак\n" +
-  "Звертайтесь до PrintForge!\n" +
+  "Звертайтесь до PrintForge!\n\n" +
   "Оберіть дію:\n" +
   "  1 - log in\n" +
   "  2 - sign up\n" +
-  "  3 - exit"  
+  "  3 - exit"
 end
 
 def run
@@ -19,25 +20,51 @@ def run
   case user_action
   when "1"
     system('clear') || system('cls')  
-    logged_user = log_in_user
-    if logged_user
-      system('clear') || system('cls')
-      run_store_menu(logged_user['name'])
-    else
-      puts "\n"
-      puts "--------------------------------------------"
-      puts "  Такого юзера не знайдено або пароль невірний"
-      puts "--------------------------------------------"
-      puts "\n\n"
+    user = log_in_user
+    if user == nil       
+      return "user_not_found"       
     end
+    case user['role']
+    when "user"  
+      logged_user = log_in_user
+       if logged_user
+          system('clear') || system('cls')
+          run_store_menu(logged_user['name'])
+       return    
+    when "admin"
+      # викликаємо інтерфейс адміна
+      admin_panel(user)
+      loop do
+        result_for_admin_panel = run_admin_panel(user)
+        break if result_for_admin_panel == :back
+      end
+    else
+      puts "\nНевідома роль користувача\n\n"
+      exit
+    end
+    return
   when "2"
+    system('clear') || system('cls')
     sign_up_user
   when "3"
     system('clear') || system('cls')
     puts "Дякуємо, звертайтеся до нас ще!\n\n\n"
     exit
   end
-  run
 end
 
-run
+def print_user_not_found
+  puts "\n"
+  puts "--------------------------------------------"
+  puts "  Такого юзера не знайдено. Зареєструйтеся"
+  puts "--------------------------------------------"
+  puts "\n"      
+end
+
+loop do
+  result = run 
+  
+  if result == "user_not_found"
+    print_user_not_found
+  end
+end
