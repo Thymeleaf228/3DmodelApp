@@ -20,7 +20,7 @@ end
 
 
 def register_user(users, name, phone, password)
-  next_id = users.any? ? 1 : users.map { |user| user['id'] }.max + 1
+  next_id = users.empty? ? 1 : users.map { |user| user['id'] }.max + 1
   hashed_password = BCrypt::Password.create(password)
 
   new_user = {

@@ -26,11 +26,10 @@ def run
     end
     case user['role']
     when "user"  
-      logged_user = log_in_user
-       if logged_user
-          system('clear') || system('cls')
-          run_store_menu(logged_user['name'])
-       return    
+      if user
+        system('clear') || system('cls')
+        run_store_menu(user['name']) 
+      end  
     when "admin"
       # викликаємо інтерфейс адміна
       admin_panel(user)
