@@ -1,0 +1,26 @@
+---
+- id: 1
+  name: SviatControl
+  phone: '67'
+  password_digest: "$2a$12$dO6bi2ZfA3H4R8/AET6Xo.5b4I6hYvgrNip7Zoz.jBLlJiO8w9Irq"
+  role: admin
+- id: 2
+  name: '23465'
+  phone: '23656'
+  password_digest: "$2a$12$A0GfLqhEue/CGRsunoTxVOCWG6TKClum/QcgMdVJuSk3lb7wxVEra"
+  role: user
+- id: 1
+  name: Tyafson
+  phone: '69'
+  password_digest: "$2a$12$btIU1JcWZPhtoDEWiCPkpOmYa.htAn7GDQ.cKUuEzTtVICcochpbu"
+  role: admin
+- id: 1
+  name: Post
+  phone: telephone
+  password_digest: "$2a$12$6C4yFG2Mf5sXV5RygYjRAOX.h7XdwckFdPlfA.cjuxCVvO7PBxnrW"
+  role: admin
+- id: 1
+  name: rost koncheniy karoche on zhirobas
+  phone: kon
+  password_digest: "$2a$12$dO6bi2ZfA3H4R8/AET6Xo.5b4I6hYvgrNip7Zoz.jBLlJiO8w9Irq"
+  role: user
