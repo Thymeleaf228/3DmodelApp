@@ -20,7 +20,7 @@ end
 
 
 def register_user(users, name, phone, password)
-  next_id = users.empty? ? 1 : users.map { |user| user['id'] }.max + 1
+  next_id = users.any? ? 1 : users.map { |user| user['id'] }.max + 1
   hashed_password = BCrypt::Password.create(password)
 
   new_user = {
@@ -33,9 +33,7 @@ def register_user(users, name, phone, password)
 
   users << new_user
 
-  File.open(USERS_DB_FILE, 'w') do |file|
-    file.write(users.to_yaml)
-  end
+  File.write(USERS_DB_FILE, users.to_yaml)
 
   puts "Користувач #{name} успішно зареєстрований!\n\n"
 end
