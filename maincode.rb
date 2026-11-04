@@ -1,6 +1,6 @@
 require_relative 'signup'
 require_relative 'login'
-
+require_relative 'store'
 require_relative 'admin-panel'
  
 def print_main_menu
@@ -26,9 +26,11 @@ def run
     end
     case user['role']
     when "user"  
-       # показувати меню звичайного користувача
-      puts "User panel..."
-      return    
+      logged_user = log_in_user
+       if logged_user
+          system('clear') || system('cls')
+          run_store_menu(logged_user['name'])
+       return    
     when "admin"
       # викликаємо інтерфейс адміна
       admin_panel(user)
