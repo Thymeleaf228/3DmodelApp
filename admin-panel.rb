@@ -68,11 +68,11 @@ def status_show
   orders = load_orders
   if orders && orders.any?
     table = Terminal::Table.new do |t|
-      t.title = "Зручний на короткий список статусів замовлень"
-      t.headings = 'User-ID', 'Вартість', 'Статус'
+      t.title = "Зручний та короткий список статусів замовлень"
+      t.headings = ['ID замовлення', 'Вартість', 'Статус']
 
       orders.each do |order|
-        t << [order['user_id'], order['final_price'], order['status']]
+        t << [order['id'], order['final_price'], order['status']]
       end
     end
 
@@ -82,19 +82,12 @@ def status_show
   end
 end
 
-
-
-
-
-
-
-
-def status_change(user_id)
+def status_change(id)
   orders = load_orders
-  order = orders.find { |order| order['user_id'] == user_id }
+  order = orders.find { |o| o['id'].to_s == id.to_s }
   return puts "Помилка: замовлення не знайдено!" if order.nil?
 
-  puts "\nСтатус замовлення юзера: #{order['status']}"
+  puts "\nПоточний статус замовлення: #{order['status']}"
 
   case order['status']
   when 'new'
@@ -105,6 +98,8 @@ def status_change(user_id)
       order['status'] = 'printing'
       save_orders(orders)
       puts "Статус успішно змінено на 'printing'!"
+    else
+      puts "Зміну статусу скасовано."
     end
 
   when 'printing'
@@ -115,22 +110,15 @@ def status_change(user_id)
       order['status'] = 'ready'
       save_orders(orders)
       puts "Статус успішно змінено на 'ready'!"
+    else
+      puts "Зміну статусу скасовано."
     end
 
   else
     puts "Для статусу '#{order['status']}' немає доступних дій."
   end
 end
-#------------------------------------------------------
-def next_status_for(current_status, action)
-  return current_status unless action == 'так'
 
-  case current_status
-  when 'new'      then 'printing'
-  when 'printing' then 'ready' # припустимо, наступний крок такий
-  else current_status
-  end
-end
 #------------------------------------------------------
 def save_orders(orders)
   File.open(ORDERS_DB_FILE, 'w') do |file|
@@ -138,17 +126,19 @@ def save_orders(orders)
   end
 end
 #------------------------------------------------------
+
 def run_change_status_work
-  puts "\n\n\nОберіть юзера по його user-id:\n\n"
-  user_id = gets.chomp
+  puts "\n\n\nОберіть замовлення по його id:\n\n"
+  id = gets.chomp
   orders = load_orders
+
   if orders && orders.any?
-    if orders.any? { |order| user_id == order['user_id'] }
+    if orders.any? { |order| id.to_s == order['id'].to_s }
       system('clear') || system('cls')
-      puts "\n\nДобре, такий юзер знайдений"
-      status_change(user_id)
+      puts "\n\nДобре, замовлення з ID #{id} знайдено."
+      status_change(id)
     else 
-      puts "Такого юзера не знайдено"
+      puts "Замовлення з таким ID не знайдено."
     end
   else 
     puts "Нажаль, замовлень від користувачів ще немає."
