@@ -28,7 +28,7 @@ def run
     when "user"  
       if user
         system('clear') || system('cls')
-        run_store_menu(user['name']) 
+        run_store_menu(user['phone'])
       end  
     when "admin"
       # викликаємо інтерфейс адміна

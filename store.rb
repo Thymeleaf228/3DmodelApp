@@ -133,8 +133,11 @@ def add_to_cart(cart)
   print "Введіть колір товару: "
   color_input = gets.chomp
 
-  print "Введіть розмір (наприклад, S, M, L або см): "
-  size_input = gets.chomp
+  print "Введіть розмір (наприклад, S, M, L): "
+  size_input = gets.chomp.downcase
+  incof_size = 1 if size_input == "s"
+  incof_size = 1.5 if size_input == "m"
+  incof_size = 2 if size_input == "l"
 
   system('clear') || system('cls')
   puts "----------------------------------------"
@@ -152,7 +155,7 @@ def add_to_cart(cart)
     return cart
   end
 
-  item_total = (selected_model['base_price'] + selected_material['extra_price']) * quantity_input
+  item_total = (selected_model['base_price'] * incof_size + selected_material['extra_price']) * quantity_input
 
   cart_item = {
     'model_id' => selected_model['id'],
