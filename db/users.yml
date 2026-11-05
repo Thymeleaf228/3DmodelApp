@@ -1,0 +1,11 @@
+---
+- id: 1
+  name: '67'
+  phone: '67'
+  password_digest: "$2a$12$/iVbKOy2Gnc/R0MWX/eKIOPhUTxX3RR5UntMIzq/PV8w6JNPpvCX6"
+  role: user
+- id: 2
+  name: '90'
+  phone: '90'
+  password_digest: "$2a$12$7HnziII82YqdThZCYruIfudtCLKpA8dVg3GZX/w0Bk8.GXl9s.b4a"
+  role: admin
