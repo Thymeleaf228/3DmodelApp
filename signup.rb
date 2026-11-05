@@ -1,7 +1,7 @@
 require 'bcrypt'
 require 'yaml'
 
-USERS_DB_FILE = 'users.yml'
+USERS_DB_FILE = 'db/users.yml'
 
 
 def sign_up_user

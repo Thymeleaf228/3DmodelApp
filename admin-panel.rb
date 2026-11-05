@@ -1,7 +1,7 @@
 require 'yaml'
 require 'terminal-table'
 
-ORDERS_DB_FILE = 'orders.yml'
+ORDERS_FILE = 'db/orders.yml'
 
 def run_admin_panel(user)
   print_admin_menu(user)
@@ -84,7 +84,7 @@ end
 
 def status_change(id)
   orders = load_orders
-  order = orders.find { |o| o['id'].to_s == id.to_s }
+  order = orders.find { |order| order['id'].to_s == id.to_s }
   return puts "Помилка: замовлення не знайдено!" if order.nil?
 
   puts "\nПоточний статус замовлення: #{order['status']}"
