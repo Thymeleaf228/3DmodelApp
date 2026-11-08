@@ -9,13 +9,13 @@ def log_in_user
   user = users.find { |user| user['phone'] == phone }
   return nil if user.nil?
 
-  if is_password_correct(user, password)  
+  if password_correct?(user, password)  
     return user
   end
   nil
 end
 
-def is_password_correct (user, password)
+def password_correct? (user, password)
   hash_from_db = user.nil? ? nil : user['password_digest']
   if hash_from_db == nil
     return false
