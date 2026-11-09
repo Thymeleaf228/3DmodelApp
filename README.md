@@ -52,16 +52,14 @@
 
 ## Запуск
 
-```bash
-ruby maincode.rb
-```
-
 ## Бібліотеки
 
 bcrypt, i18n, terminal-table
 
 ```bash
-bundle
+bundle install
+```
 
-gem install terminal-table
+```bash
+ruby maincode.rb
 ```
