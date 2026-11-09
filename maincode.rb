@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 require 'i18n'
+require 'colorize'
 
 I18n.load_path += Dir["#{File.expand_path('config/locales')}/*.yml"]
 I18n.default_locale = :en # (note that `en` is already the default!)
 
-require_relative 'signup'
-require_relative 'login'
-require_relative 'store'
-require_relative 'admin-panel'
+require_relative 'app/signup'
+require_relative 'app/login'
+require_relative 'app/store'
+require_relative 'app/admin-panel'
 
 def print_main_menu
   puts "Вітаємо у магазині PrintForge!\n\n" \
@@ -18,12 +19,10 @@ def print_main_menu
        "  1 - log in\n" \
        "  2 - sign up\n" \
        "  3 - змінити мову на українську\n" \
-       '  4 - exit'
+       "  4 - exit"
 end
 
 def run
-  puts I18n.t('test')
-
   print_main_menu
   puts "\n"
   user_action = gets.chomp
