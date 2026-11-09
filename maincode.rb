@@ -1,22 +1,24 @@
+# frozen_string_literal: true
+
 require 'i18n'
 
-I18n.load_path += Dir[File.expand_path("config/locales") + "/*.yml"]
+I18n.load_path += Dir["#{File.expand_path('config/locales')}/*.yml"]
 I18n.default_locale = :en # (note that `en` is already the default!)
 
 require_relative 'signup'
 require_relative 'login'
 require_relative 'store'
 require_relative 'admin-panel'
- 
+
 def print_main_menu
-  puts "Вітаємо у магазині PrintForge!\n\n" +
-  "Різноманітні 3D-моделі та матеріали на ваш смак\n" +
-  "Звертайтесь до PrintForge!\n\n" +
-  "Оберіть дію:\n" +
-  "  1 - log in\n" +
-  "  2 - sign up\n" +
-  "  3 - змінити мову на українську\n" +
-  "  4 - exit"
+  puts "Вітаємо у магазині PrintForge!\n\n" \
+       "Різноманітні 3D-моделі та матеріали на ваш смак\n" \
+       "Звертайтесь до PrintForge!\n\n" \
+       "Оберіть дію:\n" \
+       "  1 - log in\n" \
+       "  2 - sign up\n" \
+       "  3 - змінити мову на українську\n" \
+       '  4 - exit'
 end
 
 def run
@@ -26,19 +28,18 @@ def run
   puts "\n"
   user_action = gets.chomp
   case user_action
-  when "1"
-    system('clear') || system('cls')  
+  when '1'
+    system('clear') || system('cls')
     user = log_in_user
-    if user == nil       
-      return "user_not_found"       
-    end
+    return 'user_not_found' if user.nil?
+
     case user['role']
-    when "user"  
+    when 'user'
       if user
         system('clear') || system('cls')
         run_store_menu(user['phone'])
-      end  
-    when "admin"
+      end
+    when 'admin'
       # викликаємо інтерфейс адміна
       admin_panel(user)
       loop do
@@ -49,13 +50,13 @@ def run
       puts "\nНевідома роль користувача\n\n"
       exit
     end
-    return
-  when "2"
+    nil
+  when '2'
     system('clear') || system('cls')
     sign_up_user
-  when "3"
+  when '3'
     I18n.locale = 'ua'
-  when "4"
+  when '4'
     system('clear') || system('cls')
     puts "Дякуємо, звертайтеся до нас ще!\n\n\n"
     exit
@@ -64,16 +65,14 @@ end
 
 def print_user_not_found
   puts "\n"
-  puts "--------------------------------------------"
-  puts "  Такого юзера не знайдено. Зареєструйтеся"
-  puts "--------------------------------------------"
-  puts "\n"      
+  puts '--------------------------------------------'
+  puts '  Такого юзера не знайдено. Зареєструйтеся'
+  puts '--------------------------------------------'
+  puts "\n"
 end
 
 loop do
-  result = run 
-  
-  if result == "user_not_found"
-    print_user_not_found
-  end
+  result = run
+
+  print_user_not_found if result == 'user_not_found'
 end

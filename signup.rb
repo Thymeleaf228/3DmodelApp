@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'bcrypt'
 require 'yaml'
 
 USERS_DB_FILE = 'db/users.yml'
-
 
 def sign_up_user
   name = ask_username
@@ -13,11 +14,10 @@ def sign_up_user
   if users.any? { |user| user['phone'] == phone }
     puts "Помилка: Користувач із телефоном #{phone} вже зареєстрований!"
   else
-    puts "--- Реєструємо... ---"
+    puts '--- Реєструємо... ---'
     register_user(users, name, phone, password)
   end
 end
-
 
 def register_user(users, name, phone, password)
   next_id = users.empty? ? 1 : users.map { |user| user['id'] }.max + 1
@@ -28,7 +28,7 @@ def register_user(users, name, phone, password)
     'name' => name,
     'phone' => phone,
     'password_digest' => hashed_password.to_s,
-    'role' => "user"
+    'role' => 'user'
   }
 
   users << new_user
@@ -37,11 +37,6 @@ def register_user(users, name, phone, password)
 
   puts "Користувач #{name} успішно зареєстрований!\n\n"
 end
-
-
-
-
-
 
 def load_users
   if File.exist?(USERS_DB_FILE)
@@ -52,16 +47,16 @@ def load_users
 end
 
 def ask_username
-  puts "Введіть ваш юзенейм:"
+  puts 'Введіть ваш юзенейм:'
   gets.chomp
 end
 
 def ask_password
-  puts "Придумайте пароль:"
+  puts 'Придумайте пароль:'
   gets.chomp
 end
 
 def ask_phone
-  puts "Введіть ваш номер телефону:"
+  puts 'Введіть ваш номер телефону:'
   gets.chomp
 end
