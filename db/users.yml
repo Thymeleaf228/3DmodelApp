@@ -1,0 +1,16 @@
+---
+- id: 1
+  name: '90'
+  phone: '90'
+  password_digest: "$2a$12$uPqJBseD15sarajmU58zqOHSk3k/P0idtaHiYOATTH2ghfreUvVyK"
+  role: user
+- id: 2
+  name: '56'
+  phone: '56'
+  password_digest: "$2a$12$LRkrKDe6Kb/3IVhPPvURP.oa.JNaDfd7WpIuAy63cnUqvijUnhsXS"
+  role: user
+- id: 3
+  name: '89'
+  phone: '89'
+  password_digest: "$2a$12$IXVu3y87olq0WSi10mAuLObOSwCpfWtWeQ0vyWfU.IuwCtagXvRQO"
+  role: admin

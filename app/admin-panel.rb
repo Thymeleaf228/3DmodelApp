@@ -68,7 +68,7 @@ def status_show
 end
 
 def status_change(id)
-  orders = load_orders
+  orders = load_data(ORDERS_DB_FILE)
   order = orders.find { |order| order['id'].to_s == id.to_s }
   return puts 'Помилка: замовлення не знайдено!' if order.nil?
 
@@ -81,7 +81,7 @@ def status_change(id)
 
     if action == 'yes'
       order['status'] = 'printing'
-      save_orders(orders)
+      write_data(ORDERS_DB_FILE, orders)
       puts "Статус успішно змінено на 'printing'!"
     else
       puts 'Зміну статусу скасовано.'
@@ -93,7 +93,7 @@ def status_change(id)
 
     if action == 'yes'
       order['status'] = 'ready'
-      save_orders(orders)
+      write_data(ORDERS_DB_FILE, orders)
       puts "Статус успішно змінено на 'ready'!"
     else
       puts 'Зміну статусу скасовано.'
@@ -105,17 +105,11 @@ def status_change(id)
 end
 
 #------------------------------------------------------
-def save_orders(orders)
-  File.open(ORDERS_DB_FILE, 'w') do |file|
-    file.write(orders.to_yaml)
-  end
-end
-#------------------------------------------------------
 
 def run_change_status_work
-  puts "\n\n\nОберіть замовлення по його id:\n\n"
+  puts "\n\n\nОберіть замовлення по його id:"
   id = gets.chomp
-  orders = load_orders
+  orders = load_data(ORDERS_DB_FILE)
 
   if orders&.any?
     if orders.any? { |order| id.to_s == order['id'].to_s }
@@ -131,7 +125,7 @@ def run_change_status_work
 end
 
 def orders_list
-  orders = load_orders
+  orders = load_data(ORDERS_DB_FILE)
   if orders&.any?
     table = Terminal::Table.new do |t|
       t.title = 'Повний список замовлень'
@@ -169,12 +163,4 @@ def print_status_overall_menu
        "  1 - статуси замовлень\n" \
        "  2 - зміна статусів\n" \
        "  3 - повернення до admin-panel\n"
-end
-
-def load_orders
-  if File.exist?(ORDERS_DB_FILE)
-    YAML.load_file(ORDERS_DB_FILE) || []
-  else
-    []
-  end
 end

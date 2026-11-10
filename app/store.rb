@@ -2,15 +2,7 @@
 
 require 'yaml'
 
-ORDERS_DB_FILE = 'db/orders.yml'
-
-def load_data(filename)
-  if File.exist?(filename)
-    YAML.load_file(filename) || []
-  else
-    []
-  end
-end
+ORDERS_DB_FILE = 'orders.yml'
 
 def save_order_to_file(order_items, user_id)
   orders = load_data(ORDERS_DB_FILE)
@@ -34,9 +26,7 @@ def save_order_to_file(order_items, user_id)
     next_id += 1
   end
 
-  File.open(ORDERS_DB_FILE, 'w') do |file|
-    file.write(orders.to_yaml)
-  end
+  write_data(ORDERS_DB_FILE, orders)
 end
 
 def run_store_menu(username, cart = [])
@@ -80,7 +70,7 @@ end
 
 def show_models_catalog
   system('clear') || system('cls')
-  data = load_data('db/models.yml')
+  data = load_data('models.yml')
   models = data['models'] || []
 
   puts "\n--- КАТАЛОГ МОДЕЛЕЙ ---"
@@ -93,7 +83,7 @@ end
 
 def show_materials_catalog
   system('clear') || system('cls')
-  data = load_data('db/materials.yml')
+  data = load_data('materials.yml')
   materials = data['materials'] || []
 
   puts "\n--- КАТАЛОГ МАТЕРІАЛІВ ---"
@@ -106,8 +96,8 @@ end
 
 def add_to_cart(cart)
   system('clear') || system('cls')
-  models_data = load_data('db/models.yml')['models'] || []
-  materials_data = load_data('db/materials.yml')['materials'] || []
+  models_data = load_data('models.yml')['models'] || []
+  materials_data = load_data('materials.yml')['materials'] || []
 
   puts '--- ДОДАВАННЯ ДО КОШИКА ---'
 

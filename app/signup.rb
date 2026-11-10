@@ -3,14 +3,22 @@
 require 'bcrypt'
 require 'yaml'
 
-USERS_DB_FILE = 'db/users.yml'
+require_relative 'database.rb'
 
-def sign_up_user
+USERS_DB_FILE = 'users.yml'
+
+def sign_up
   name = ask_username
   phone = ask_phone
   password = ask_password
   system('clear') || system('cls')
-  users = load_users
+
+  puts "DEBUG 1: Текущая папка выполнения: #{Dir.pwd}"
+  puts "DEBUG 2: Полный путь к базе: #{get_path(USERS_DB_FILE)}"
+  users = load_data(USERS_DB_FILE)
+  puts "DEBUG 3: Что считано из файла: #{users.inspect}"
+
+  users = load_data(USERS_DB_FILE)
   if users.any? { |user| user['phone'] == phone }
     puts "Помилка: Користувач із телефоном #{phone} вже зареєстрований!"
   else
@@ -21,29 +29,22 @@ end
 
 def register_user(users, name, phone, password)
   next_id = users.empty? ? 1 : users.map { |user| user['id'] }.max + 1
+
   hashed_password = BCrypt::Password.create(password)
 
   new_user = {
     'id' => next_id,
     'name' => name,
-    'phone' => phone,
+    'phone' => phone.to_s,
     'password_digest' => hashed_password.to_s,
     'role' => 'user'
   }
 
   users << new_user
 
-  File.write(USERS_DB_FILE, users.to_yaml)
+  write_data(USERS_DB_FILE, users)
 
   puts "Користувач #{name} успішно зареєстрований!\n\n"
-end
-
-def load_users
-  if File.exist?(USERS_DB_FILE)
-    YAML.load_file(USERS_DB_FILE) || []
-  else
-    []
-  end
 end
 
 def ask_username

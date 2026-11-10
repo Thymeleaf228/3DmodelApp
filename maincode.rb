@@ -19,7 +19,7 @@ def print_main_menu
        "  1 - log in\n" \
        "  2 - sign up\n" \
        "  3 - змінити мову на українську\n" \
-       "  4 - exit"
+       '  4 - exit'
 end
 
 def run
@@ -29,7 +29,7 @@ def run
   case user_action
   when '1'
     system('clear') || system('cls')
-    user = log_in_user
+    user = log_in
     return 'user_not_found' if user.nil?
 
     case user['role']
@@ -52,7 +52,7 @@ def run
     nil
   when '2'
     system('clear') || system('cls')
-    sign_up_user
+    sign_up
   when '3'
     I18n.locale = 'ua'
   when '4'
