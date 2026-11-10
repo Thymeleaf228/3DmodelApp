@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'yaml'
 
 def load_data(filename)
@@ -14,7 +13,6 @@ end
 
 def write_data(filename, data)
   filepath = get_path(filename)
-
   File.write(filepath, data.to_yaml)
 end
 

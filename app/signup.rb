@@ -8,15 +8,11 @@ require_relative 'database.rb'
 USERS_DB_FILE = 'users.yml'
 
 def sign_up
+  system('clear') || system('cls')
   name = ask_username
   phone = ask_phone
   password = ask_password
   system('clear') || system('cls')
-
-  puts "DEBUG 1: Текущая папка выполнения: #{Dir.pwd}"
-  puts "DEBUG 2: Полный путь к базе: #{get_path(USERS_DB_FILE)}"
-  users = load_data(USERS_DB_FILE)
-  puts "DEBUG 3: Что считано из файла: #{users.inspect}"
 
   users = load_data(USERS_DB_FILE)
   if users.any? { |user| user['phone'] == phone }

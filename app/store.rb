@@ -2,8 +2,6 @@
 
 require 'yaml'
 
-ORDERS_DB_FILE = 'orders.yml'
-
 def save_order_to_file(order_items, user_id)
   orders = load_data(ORDERS_DB_FILE)
   orders = [] unless orders.is_a?(Array)
