@@ -3,11 +3,13 @@
 require 'bcrypt'
 require 'yaml'
 
-def log_in_user
+require_relative 'database.rb'
+
+def log_in
   phone = ask_phone
   password = ask_password
 
-  users = load_users
+  users = load_data(USERS_DB_FILE)
   user = users.find { |user| user['phone'] == phone }
   return nil if user.nil?
 

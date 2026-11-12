@@ -3,19 +3,17 @@
 require 'yaml'
 require 'terminal-table'
 
-ORDERS_FILE = 'db/orders.yml'
+ORDERS_DB_FILE = 'orders.yml'
 
 def run_admin_panel(user)
   print_admin_menu(user)
-  puts "\n"
   admin_action = gets.chomp
   case admin_action
-  when '1'
-    # переглянути усі замовлення
+  when '1'  
     system('clear') || system('cls')
-    orders_list
+    show_orders_list
   when '2'
-    # зміна статусів замовлення
+    # меню зміна статусів замовлення
     system('clear') || system('cls')
     loop do
       result_for_status = run_status_overall_work
@@ -35,7 +33,7 @@ def run_status_overall_work
   admin_action = gets.chomp
   case admin_action
   when '1'
-    # переглянути усі статуси замовлення
+    # переглянути усі статуси замовлення коротко
     system('clear') || system('cls')
     status_show
   when '2'
@@ -50,8 +48,8 @@ def run_status_overall_work
 end
 
 def status_show
-  orders = load_orders
-  if orders&.any?
+  orders = load_data(ORDERS_DB_FILE)
+  if orders.any?
     table = Terminal::Table.new do |t|
       t.title = 'Зручний та короткий список статусів замовлень'
       t.headings = ['ID замовлення', 'Вартість', 'Статус']
@@ -67,11 +65,7 @@ def status_show
   end
 end
 
-def status_change(id)
-  orders = load_orders
-  order = orders.find { |order| order['id'].to_s == id.to_s }
-  return puts 'Помилка: замовлення не знайдено!' if order.nil?
-
+def status_change(orders, order)
   puts "\nПоточний статус замовлення: #{order['status']}"
 
   case order['status']
@@ -81,7 +75,7 @@ def status_change(id)
 
     if action == 'yes'
       order['status'] = 'printing'
-      save_orders(orders)
+      write_data(ORDERS_DB_FILE, orders)
       puts "Статус успішно змінено на 'printing'!"
     else
       puts 'Зміну статусу скасовано.'
@@ -93,7 +87,7 @@ def status_change(id)
 
     if action == 'yes'
       order['status'] = 'ready'
-      save_orders(orders)
+      write_data(ORDERS_DB_FILE, orders)
       puts "Статус успішно змінено на 'ready'!"
     else
       puts 'Зміну статусу скасовано.'
@@ -105,23 +99,19 @@ def status_change(id)
 end
 
 #------------------------------------------------------
-def save_orders(orders)
-  File.open(ORDERS_DB_FILE, 'w') do |file|
-    file.write(orders.to_yaml)
-  end
-end
-#------------------------------------------------------
 
 def run_change_status_work
-  puts "\n\n\nОберіть замовлення по його id:\n\n"
-  id = gets.chomp
-  orders = load_orders
+  puts "\n\n\nОберіть замовлення по його id:"
+  id = gets.chomp.strip 
+  orders = load_data(ORDERS_DB_FILE)
 
-  if orders&.any?
-    if orders.any? { |order| id.to_s == order['id'].to_s }
+  if orders.any?
+    order = orders.find { |order| order['id'].to_s == id.to_s }
+
+    if order
       system('clear') || system('cls')
-      puts "\n\nДобре, замовлення з ID #{id} знайдено."
-      status_change(id)
+      puts "\n\nЗамовлення з ID #{id} знайдено."
+      status_change(orders, order)
     else
       puts 'Замовлення з таким ID не знайдено.'
     end
@@ -130,9 +120,9 @@ def run_change_status_work
   end
 end
 
-def orders_list
-  orders = load_orders
-  if orders&.any?
+def show_orders_list
+  orders = load_data(ORDERS_DB_FILE)
+  if orders.any?
     table = Terminal::Table.new do |t|
       t.title = 'Повний список замовлень'
       t.headings = ['ID замовлення', 'ID юзера', 'Колір', 'Розмір', 'Кількість', 'Фінальна ціна', 'Статус']
@@ -148,19 +138,13 @@ def orders_list
   end
 end
 
-def admin_panel(user)
-  system('clear') || system('cls')
-  puts 'Entering the admin mode...'
-  puts "Logged in as 'admin' successfully."
-  puts "#{user['name']} now can manage the program"
-end
 
 def print_admin_menu(user)
   puts "\n\nВітаємо, #{user['name']}!\n" \
        "Оберіть дію:\n" \
        "  1 - переглянути усі замовлення\n" \
        "  2 - зміна статусів замовлення\n" \
-       '  3 - повернутись у main menu'
+       "  3 - повернутись у main menu\n"
 end
 
 def print_status_overall_menu
@@ -169,12 +153,4 @@ def print_status_overall_menu
        "  1 - статуси замовлень\n" \
        "  2 - зміна статусів\n" \
        "  3 - повернення до admin-panel\n"
-end
-
-def load_orders
-  if File.exist?(ORDERS_DB_FILE)
-    YAML.load_file(ORDERS_DB_FILE) || []
-  else
-    []
-  end
 end

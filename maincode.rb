@@ -11,6 +11,53 @@ require_relative 'app/login'
 require_relative 'app/store'
 require_relative 'app/admin-panel'
 
+def run
+  print_main_menu
+  puts "\n"
+  user_action = gets.chomp
+  case user_action
+  when '1'
+    login
+  when '2'    
+    sign_up
+  when '3'
+    I18n.locale = 'ua'
+  when '4'
+    do_exit
+  end
+end
+
+
+def login
+  system('clear') || system('cls')
+    user = log_in
+    return 'user_not_found' if user.nil?
+
+    case user['role']
+    when 'user'   
+      system('clear') || system('cls')
+      run_store_menu(user['phone'])      
+    when 'admin'
+      admin_greeting(user)
+      loop do
+        admin_panel_result = run_admin_panel(user)
+        break if admin_panel_result == :back
+      end
+    else
+      puts "\nНевідома роль користувача\n\n"
+      exit
+    end
+    nil
+
+end
+
+def do_exit
+  system('clear') || system('cls')
+    puts "Дякуємо, звертайтеся до нас ще!\n\n\n"
+    exit
+end
+
+
 def print_main_menu
   puts "Вітаємо у магазині PrintForge!\n\n" \
        "Різноманітні 3D-моделі та матеріали на ваш смак\n" \
@@ -22,45 +69,6 @@ def print_main_menu
        "  4 - exit"
 end
 
-def run
-  print_main_menu
-  puts "\n"
-  user_action = gets.chomp
-  case user_action
-  when '1'
-    system('clear') || system('cls')
-    user = log_in_user
-    return 'user_not_found' if user.nil?
-
-    case user['role']
-    when 'user'
-      if user
-        system('clear') || system('cls')
-        run_store_menu(user['phone'])
-      end
-    when 'admin'
-      # викликаємо інтерфейс адміна
-      admin_panel(user)
-      loop do
-        result_for_admin_panel = run_admin_panel(user)
-        break if result_for_admin_panel == :back
-      end
-    else
-      puts "\nНевідома роль користувача\n\n"
-      exit
-    end
-    nil
-  when '2'
-    system('clear') || system('cls')
-    sign_up_user
-  when '3'
-    I18n.locale = 'ua'
-  when '4'
-    system('clear') || system('cls')
-    puts "Дякуємо, звертайтеся до нас ще!\n\n\n"
-    exit
-  end
-end
 
 def print_user_not_found
   puts "\n"
@@ -69,6 +77,14 @@ def print_user_not_found
   puts '--------------------------------------------'
   puts "\n"
 end
+
+def admin_greeting(user)
+  system('clear') || system('cls')
+  puts 'Entering the admin mode...'
+  puts "Logged in as 'admin' successfully."
+  puts "#{user['name']} now can manage the program"
+end
+
 
 loop do
   result = run

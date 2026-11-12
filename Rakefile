@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 require 'rake'
-require_relative 'signup.rb'
+require_relative 'signup'
 require 'ffaker'
 
 namespace :seeds do
