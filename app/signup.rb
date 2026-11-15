@@ -7,18 +7,18 @@ require_relative 'entities/user.rb'
 
 def sign_up
   clear_console
-  name = ask_promt('Введіть ваш юзенейм:')
-  phone = ask_promt('Придумайте пароль:')
-  password = ask_promt('Введіть ваш номер телефону:')
+  name = ask_promt(I18n.t('auth.signup.prompt_username'))
+  phone = ask_promt(I18n.t('auth.signup.prompt_phone'))
+  password = ask_promt(I18n.t('auth.signup.prompt_password'))
   clear_console
 
   users = load_users
   if users.any? { |user| user['phone'] == phone }
-    puts "Помилка: Користувач із телефоном #{phone} вже зареєстрований!"
+    puts I18n.t('auth.signup.phone_exists', phone: phone)
   else
-    puts '--- Реєструємо... ---'
+    puts I18n.t('auth.signup.registering')
     create_user(users, name, phone, password)
 
-    puts "Користувач #{name} успішно зареєстрований!\n\n"
+    puts I18n.t('auth.signup.success', name: name)
   end
 end

@@ -3,8 +3,9 @@
 require 'i18n'
 require 'colorize'
 
-I18n.load_path += Dir["#{File.expand_path('config/locales')}/*.yml"]
-I18n.default_locale = :en # (note that `en` is already the default!)
+I18n.load_path += Dir["#{File.expand_path('config/locales', __dir__)}/*.yml"]
+I18n.available_locales = %i[en ua]
+I18n.default_locale = :en
 
 require_relative 'app/signup.rb'
 require_relative 'app/login.rb'
@@ -23,10 +24,17 @@ def run
   when '2'
     sign_up
   when '3'
-    I18n.locale = 'ua'
+    toggle_language
+    clear_console
   when '4'
     do_exit
+  else
+    clear_console
   end
+end
+
+def toggle_language
+  I18n.locale = (I18n.locale == :en ? :ua : :en)
 end
 
 def login
@@ -45,7 +53,7 @@ def login
       break if admin_panel_result == MOVE_TO_PREV_PANEL
     end
   else
-    puts "\nНевідома роль користувача\n\n"
+    puts I18n.t('system.unknown_role')
     exit
   end
   nil
@@ -53,34 +61,21 @@ end
 
 def do_exit
   clear_console
-  puts "Дякуємо, звертайтеся до нас ще!\n\n\n"
+  puts I18n.t('system.exit_message')
   exit
 end
 
 def print_main_menu
-  puts "Вітаємо у магазині PrintForge!\n\n" \
-       "Різноманітні 3D-моделі та матеріали на ваш смак\n" \
-       "Звертайтесь до PrintForge!\n\n" \
-       "Оберіть дію:\n" \
-       "  1 - log in\n" \
-       "  2 - sign up\n" \
-       "  3 - змінити мову на українську\n" \
-       '  4 - exit'
+  puts I18n.t('user.main')
 end
 
 def print_user_not_found
-  puts "\n"
-  puts '--------------------------------------------'
-  puts '     Невірний номер телефону або пароль     '
-  puts '--------------------------------------------'
-  puts "\n"
+  puts I18n.t('system.user_not_found')
 end
 
 def admin_greeting(user)
   clear_console
-  puts 'Entering the admin mode...'
-  puts "Logged in as 'admin' successfully."
-  puts "#{user['name']} now can manage the program"
+  puts I18n.t('admin.greeting', name: user['name'])
 end
 
 loop do

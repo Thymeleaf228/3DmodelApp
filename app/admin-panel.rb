@@ -16,16 +16,14 @@ def run_admin_panel(user)
     clear_console
     show_orders_list
   when '2'
-    # меню зміна статусів замовлення
     clear_console
     loop do
       result_for_status = run_status_overall_work
       break if result_for_status == MOVE_TO_PREV_PANEL
     end
   when '3'
-    # повернутись у main menu
     clear_console
-    puts "Leaving the admin mode...\n\n\n"
+    puts I18n.t('admin.main_menu.leaving')
     MOVE_TO_PREV_PANEL
   end
 end
@@ -36,16 +34,13 @@ def run_status_overall_work
   admin_action = gets.chomp
   case admin_action
   when '1'
-    # переглянути усі статуси замовлення коротко
     clear_console
     status_show
   when '2'
-    # зміна статусів замовлення
     run_change_status_work
   when '3'
-    # повернутись у admin-panel
     clear_console
-    puts "Returning to the admin-panel...\n\n\n"
+    puts I18n.t('admin.status_menu.returning')
     MOVE_TO_PREV_PANEL
   end
 end
@@ -53,42 +48,39 @@ end
 def status_show
   orders = load_data(ORDERS_DB_FILE)
   if orders.any?
-    title = 'Зручний та короткий список статусів замовлень'
-    headings = ['ID замовлення', 'Вартість', 'Статус']
+    title = I18n.t('admin.orders.short_table.title')
+    headings = I18n.t('admin.orders.short_table.headings')
 
     rows = orders.map do |order|
       [
         order['id'],
         order['final_price'],
-        order['status']
+        I18n.t("admin.statuses.#{order['status']}", default: order['status'])
       ]
     end
 
     puts render_table(title, headings, rows)
   else
-    puts 'Нажаль, замовлень від користувачів ще немає.'
+    puts I18n.t('admin.orders.empty')
   end
 end
 
 def status_change(orders, order)
-  puts "\nПоточний статус замовлення: #{order['status']}"
+  translated_status = I18n.t("admin.statuses.#{order['status']}", default: order['status'])
+  puts I18n.t('admin.change_status.current_status', status: translated_status)
 
   case order['status']
   when 'new'
     update_order_status(orders, order, 'printing')
-
   when 'printing'
     update_order_status(orders, order, 'ready')
-
   else
-    puts "Для статусу '#{order['status']}' немає доступних дій."
+    puts I18n.t('admin.change_status.no_actions', status: translated_status)
   end
 end
 
-#------------------------------------------------------
-
 def run_change_status_work
-  puts "\n\n\nОберіть замовлення по його id:"
+  puts I18n.t('admin.change_status.prompt_id')
   id = gets.chomp.strip
   orders = load_data(ORDERS_DB_FILE)
 
@@ -97,21 +89,21 @@ def run_change_status_work
 
     if order
       clear_console
-      puts "\n\nЗамовлення з ID #{id} знайдено."
+      puts I18n.t('admin.change_status.order_found', id: id)
       status_change(orders, order)
     else
-      puts 'Замовлення з таким ID не знайдено.'
+      puts I18n.t('admin.change_status.order_not_found')
     end
   else
-    puts 'Нажаль, замовлень від користувачів ще немає.'
+    puts I18n.t('admin.orders.empty')
   end
 end
 
 def show_orders_list
   orders = load_data(ORDERS_DB_FILE)
   if orders.any?
-    title = 'Повний список замовлень'
-    headings = ['ID замовлення', 'ID юзера', 'Колір', 'Розмір', 'Кількість', 'Фінальна ціна', 'Статус']
+    title = I18n.t('admin.orders.full_table.title')
+    headings = I18n.t('admin.orders.full_table.headings')
     rows = orders.map do |order|
       [
         order['id'],
@@ -120,28 +112,21 @@ def show_orders_list
         order['size'],
         order['quantity'],
         order['final_price'],
-        order['status']
+        I18n.t("admin.statuses.#{order['status']}", default: order['status'])
       ]
     end
 
     puts render_table(title, headings, rows)
   else
-    puts 'Нажаль, замовлень від користувачів ще немає.'
+    puts I18n.t('admin.orders.empty')
   end
 end
 
 def print_admin_menu(user)
-  puts "\n\nВітаємо, #{user['name']}!\n" \
-       "Оберіть дію:\n" \
-       "  1 - переглянути усі замовлення\n" \
-       "  2 - зміна статусів замовлення\n" \
-       "  3 - повернутись у main menu\n"
+  puts I18n.t('admin.main_menu.greeting', name: user['name'])
+  puts I18n.t('admin.main_menu.body')
 end
 
 def print_status_overall_menu
-  puts "\n\n\nМеню зміни orders status.\n" \
-       "Оберіть дію:\n" \
-       "  1 - статуси замовлень\n" \
-       "  2 - зміна статусів\n" \
-       "  3 - повернення до admin-panel\n"
+  puts I18n.t('admin.status_menu.body')
 end

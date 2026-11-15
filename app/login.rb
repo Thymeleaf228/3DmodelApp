@@ -1,12 +1,13 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
 require_relative 'console_helper.rb'
 require_relative 'entities/user.rb'
 
 def log_in
-  phone = ask_promt('Введіть номер телефону:')
-  password = ask_promt('Введіть пароль:')
+  phone = ask_promt(I18n.t('auth.login.prompt_phone'))
+  password = ask_promt(I18n.t('auth.login.prompt_password'))
 
   user = authenticate_user(phone, password)
 
@@ -24,6 +25,6 @@ def password_correct?(user, password)
   verify_password(hash_from_db, password)
 end
 
-def authenticate_user(phone, password)
+def authenticate_user(phone, _password)
   load_users.find { |user| user['phone'] == phone }
 end

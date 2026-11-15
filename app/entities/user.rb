@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require_relative '../database.rb'
 
 USERS_DB_FILE = 'users.yml'
 
 USER_ROLES = {
-user: 'user',
-admin: 'admin'
+  user: 'user',
+  admin: 'admin'
 }.freeze
 
 def create_user(users, name, phone, password)
