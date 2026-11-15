@@ -1,16 +1,15 @@
 # frozen_string_literal: true
-
-require 'bcrypt'
 require 'yaml'
 
-require_relative 'database.rb'
+require_relative 'console_helper.rb'
+require_relative 'entities/user.rb'
 
 def log_in
-  phone = ask_phone
-  password = ask_password
+  phone = ask_promt('Введіть номер телефону:')
+  password = ask_promt('Введіть пароль:')
 
-  users = load_data(USERS_DB_FILE)
-  user = users.find { |user| user['phone'] == phone }
+  user = authenticate_user(phone, password)
+
   return nil if user.nil?
 
   return user if password_correct?(user, password)
@@ -22,11 +21,9 @@ def password_correct?(user, password)
   hash_from_db = user.nil? ? nil : user['password_digest']
   return false if hash_from_db.nil?
 
-  bcrypt_object = BCrypt::Password.new(hash_from_db)
-  bcrypt_object == password
+  verify_password(hash_from_db, password)
 end
 
-def ask_password
-  puts 'Введіть пароль:'
-  gets.chomp
+def authenticate_user(phone, password)
+  load_users.find { |user| user['phone'] == phone }
 end

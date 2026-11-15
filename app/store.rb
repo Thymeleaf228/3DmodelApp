@@ -2,8 +2,10 @@
 
 require 'yaml'
 
+require_relative 'console_helper.rb'
+
 def save_order_to_file(order_items, user_id)
-  orders = load_data(ORDERS_DB_FILE)
+  orders = load_orders
   orders = [] unless orders.is_a?(Array)
 
   next_id = orders.empty? ? 1 : (orders.map { |o| o['id'] || 0 }.max + 1)
@@ -24,11 +26,11 @@ def save_order_to_file(order_items, user_id)
     next_id += 1
   end
 
-  write_data(ORDERS_DB_FILE, orders)
+  write_orders(orders)
 end
 
 def run_store_menu(username, cart = [])
-  system('clear') || system('cls')
+  clear_console
   puts "Привіт, #{username}!"
   puts 'Вітаємо у магазині PrintForge!'
   puts "\nОберіть дію та введіть її номер:"
@@ -58,7 +60,7 @@ def get_store_action(action, username, cart)
     updated_cart = manage_cart(cart, username)
     run_store_menu(username, updated_cart)
   when '5'
-    system('clear') || system('cls')
+    clear_console
   else
     puts "\n[!] Невідома дія, введіть число від 1 до 5."
     sleep(1.5)
@@ -67,7 +69,7 @@ def get_store_action(action, username, cart)
 end
 
 def show_models_catalog
-  system('clear') || system('cls')
+  clear_console
   data = load_data('models.yml')
   models = data['models'] || []
 
@@ -80,7 +82,7 @@ def show_models_catalog
 end
 
 def show_materials_catalog
-  system('clear') || system('cls')
+  clear_console
   data = load_data('materials.yml')
   materials = data['materials'] || []
 
@@ -93,7 +95,7 @@ def show_materials_catalog
 end
 
 def add_to_cart(cart)
-  system('clear') || system('cls')
+  clear_console
   models_data = load_data('models.yml')['models'] || []
   materials_data = load_data('materials.yml')['materials'] || []
 
@@ -129,7 +131,7 @@ def add_to_cart(cart)
   incof_size = 1.5 if size_input == 'm'
   incof_size = 2 if size_input == 'l'
 
-  system('clear') || system('cls')
+  clear_console
   puts '----------------------------------------'
   puts 'Ви обрали:'
   puts "Модель: #{selected_model['title']} (#{selected_model['base_price']} грн)"
@@ -165,7 +167,7 @@ def add_to_cart(cart)
 end
 
 def manage_cart(cart, username)
-  system('clear') || system('cls')
+  clear_console
   if cart.empty?
     puts 'Ваш кошик порожній.'
     puts "\nНатисніть Enter, щоб повернутися в меню..."

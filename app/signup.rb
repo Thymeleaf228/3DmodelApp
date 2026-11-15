@@ -1,59 +1,24 @@
 # frozen_string_literal: true
 
-require 'bcrypt'
 require 'yaml'
 
-require_relative 'database.rb'
-
-USERS_DB_FILE = 'users.yml'
+require_relative 'console_helper.rb'
+require_relative 'entities/user.rb'
 
 def sign_up
-  system('clear') || system('cls')
-  name = ask_username
-  phone = ask_phone
-  password = ask_password
-  system('clear') || system('cls')
+  clear_console
+  name = ask_promt('Введіть ваш юзенейм:')
+  phone = ask_promt('Придумайте пароль:')
+  password = ask_promt('Введіть ваш номер телефону:')
+  clear_console
 
-  users = load_data(USERS_DB_FILE)
+  users = load_users
   if users.any? { |user| user['phone'] == phone }
     puts "Помилка: Користувач із телефоном #{phone} вже зареєстрований!"
   else
     puts '--- Реєструємо... ---'
-    register_user(users, name, phone, password)
+    create_user(users, name, phone, password)
+
+    puts "Користувач #{name} успішно зареєстрований!\n\n"
   end
-end
-
-def register_user(users, name, phone, password)
-  next_id = users.empty? ? 1 : users.map { |user| user['id'] }.max + 1
-
-  hashed_password = BCrypt::Password.create(password)
-
-  new_user = {
-    'id' => next_id,
-    'name' => name,
-    'phone' => phone.to_s,
-    'password_digest' => hashed_password.to_s,
-    'role' => 'user'
-  }
-
-  users << new_user
-
-  write_data(USERS_DB_FILE, users)
-
-  puts "Користувач #{name} успішно зареєстрований!\n\n"
-end
-
-def ask_username
-  puts 'Введіть ваш юзенейм:'
-  gets.chomp
-end
-
-def ask_password
-  puts 'Придумайте пароль:'
-  gets.chomp
-end
-
-def ask_phone
-  puts 'Введіть ваш номер телефону:'
-  gets.chomp
 end
