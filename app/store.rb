@@ -1,70 +1,51 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require_relative 'entities/order'
+require_relative 'entities/model'
+require_relative 'entities/material'
+require_relative 'console_helper'
 
-require_relative 'console_helper.rb'
+SIZE_COEFFICIENTS = { 's' => 1.0, 'm' => 1.5, 'l' => 2.0 }.freeze
 
-def save_order_to_file(order_items, user_id)
-  orders = load_orders
-  orders = [] unless orders.is_a?(Array)
-
-  next_id = orders.empty? ? 1 : (orders.map { |o| o['id'] || 0 }.max + 1)
-
-  order_items.each do |item|
-    order_record = {
-      'id' => next_id,
-      'user_id' => user_id,
-      'model_id' => item['model_id'],
-      'material_id' => item['material_id'],
-      'color' => item['color'],
-      'size' => item['size'],
-      'quantity' => item['quantity'],
-      'final_price' => item['total'],
-      'status' => 'new'
-    }
-    orders << order_record
-    next_id += 1
-  end
-
-  write_orders(orders)
-end
-
-def run_store_menu(username, cart = [])
+def run_store_menu(logged_user, cart = [])
   clear_console
+  username = logged_user.is_a?(Hash) ? (logged_user['name'] || logged_user[:name]) : logged_user
+
   puts I18n.t('user.store_menu.greeting', username: username)
   puts I18n.t('user.store_menu.body', count: cart.size)
   print I18n.t('user.store_menu.prompt')
+
   choice = gets.chomp
-  get_store_action(choice, username, cart)
+  get_store_action(choice, logged_user, cart)
 end
 
-def get_store_action(action, username, cart)
+def get_store_action(action, logged_user, cart)
   case action
   when '1'
     show_models_catalog
-    run_store_menu(username, cart)
+    run_store_menu(logged_user, cart)
   when '2'
     show_materials_catalog
-    run_store_menu(username, cart)
+    run_store_menu(logged_user, cart)
   when '3'
     updated_cart = add_to_cart(cart)
-    run_store_menu(username, updated_cart)
+    run_store_menu(logged_user, updated_cart)
   when '4'
-    updated_cart = manage_cart(cart, username)
-    run_store_menu(username, updated_cart)
+    updated_cart = manage_cart(cart, logged_user)
+    run_store_menu(logged_user, updated_cart)
   when '5'
     clear_console
   else
     puts I18n.t('user.store_menu.invalid_action')
     sleep(1.5)
-    run_store_menu(username, cart)
+    run_store_menu(logged_user, cart)
   end
 end
 
 def show_models_catalog
   clear_console
-  data = load_data('models.yml')
-  models = data['models'] || []
+  models = ModelEntity.all_models
 
   puts I18n.t('user.catalog.models_header')
   models.each do |m|
@@ -76,8 +57,7 @@ end
 
 def show_materials_catalog
   clear_console
-  data = load_data('materials.yml')
-  materials = data['materials'] || []
+  materials = MaterialEntity.all_materials
 
   puts I18n.t('user.catalog.materials_header')
   materials.each do |mat|
@@ -89,16 +69,13 @@ end
 
 def add_to_cart(cart)
   clear_console
-  models_data = load_data('models.yml')['models'] || []
-  materials_data = load_data('materials.yml')['materials'] || []
-
   puts I18n.t('user.add_to_cart.header')
 
   print I18n.t('user.add_to_cart.prompt_model')
   model_input = gets.chomp
   return cart if model_input.downcase == 'back'
 
-  selected_model = models_data.find { |m| m['id'].to_s == model_input }
+  selected_model = ModelEntity.find_model_by_id(model_input)
   unless selected_model
     puts I18n.t('user.add_to_cart.model_not_found')
     sleep(1.5)
@@ -107,8 +84,7 @@ def add_to_cart(cart)
 
   print I18n.t('user.add_to_cart.prompt_material')
   material_input = gets.chomp
-  selected_material = materials_data.find { |mat| mat['id'].to_s == material_input }
-
+  selected_material = MaterialEntity.find_material_by_id(material_input)
   unless selected_material
     puts I18n.t('user.add_to_cart.material_not_found')
     sleep(1.5)
@@ -120,12 +96,12 @@ def add_to_cart(cart)
 
   print I18n.t('user.add_to_cart.prompt_size')
   size_input = gets.chomp.downcase
-  incof_size = case size_input
-               when 's' then 1
-               when 'm' then 1.5
-               when 'l' then 2
-               else 1
-               end
+  unless SIZE_COEFFICIENTS.key?(size_input)
+    puts "\n[!] Помилка: Невірний розмір! Оберіть S, M або L."
+    sleep(1.5)
+    return cart
+  end
+  size_coef = SIZE_COEFFICIENTS[size_input]
 
   clear_console
   puts I18n.t(
@@ -135,10 +111,10 @@ def add_to_cart(cart)
     material_name: selected_material['name'],
     material_price: selected_material['extra_price'],
     color: color_input,
-    size: size_input
+    size: size_input.upcase
   )
-
   print I18n.t('user.add_to_cart.prompt_quantity')
+
   quantity_input = gets.chomp.to_i
   if quantity_input <= 0
     puts I18n.t('user.add_to_cart.invalid_quantity')
@@ -146,8 +122,7 @@ def add_to_cart(cart)
     return cart
   end
 
-  item_total = (selected_model['base_price'] * incof_size + selected_material['extra_price']) * quantity_input
-
+  item_total = (selected_model['base_price'] * size_coef + selected_material['extra_price']) * quantity_input
   cart_item = {
     'model_id' => selected_model['id'],
     'model' => selected_model['title'],
@@ -165,7 +140,7 @@ def add_to_cart(cart)
   cart
 end
 
-def manage_cart(cart, username)
+def manage_cart(cart, logged_user)
   clear_console
   if cart.empty?
     puts I18n.t('user.cart.empty')
@@ -175,30 +150,40 @@ def manage_cart(cart, username)
   end
 
   puts I18n.t('user.cart.header')
+  total_items_count = 0
   total_sum = 0
+
   cart.each_with_index do |item, index|
     subtotal = item['total']
     total_sum += subtotal
+    total_items_count += item['quantity']
+
     puts I18n.t(
       'user.cart.item_details',
       index: index + 1,
       model: item['model'],
       material: item['material'],
       color: item['color'],
-      size: item['size'],
+      size: item['size'].upcase,
       quantity: item['quantity'],
       subtotal: subtotal
     )
   end
-  puts I18n.t('user.cart.total_sum', total: total_sum)
+
+  if total_items_count >= 5
+    discount_sum = total_sum * 0.1
+    total_sum -= discount_sum
+    puts "[!] Знижка 10% за покупку від 5 виробів застосована! (Знижка: -#{discount_sum.round(2)} грн)"
+  end
+
+  puts I18n.t('user.cart.total_sum', total: total_sum.round(2))
   puts I18n.t('user.cart.actions')
-
   print I18n.t('user.cart.prompt_action')
-  action = gets.chomp
 
+  action = gets.chomp
   case action
   when '1'
-    save_order_to_file(cart, username)
+    OrderEntity.create_order(cart, logged_user)
     puts I18n.t('user.cart.order_success')
     sleep(2)
     []
@@ -212,12 +197,12 @@ def manage_cart(cart, username)
       puts I18n.t('user.cart.invalid_index')
     end
     sleep(1.5)
-    manage_cart(cart, username)
+    manage_cart(cart, logged_user)
   when '3'
     cart
   else
     puts I18n.t('user.cart.invalid_action')
     sleep(1)
-    manage_cart(cart, username)
+    manage_cart(cart, logged_user)
   end
 end
