@@ -1,0 +1,11 @@
+---
+- id: 1
+  name: ''
+  phone: ''
+  password_digest: "$2a$12$pYzk5ZHBowSWhnUKN/EbIuoRG1e7MwXszf7ML9SNFw0kKwVUHMFM."
+  role: user
+- id: 2
+  name: KELIGHT
+  phone: '777'
+  password_digest: "$2a$12$jPPnJGb2og.vq80v3Y4eyuIaxzJmK8iPxGenrbWAElQmn70YlSufy"
+  role: user
