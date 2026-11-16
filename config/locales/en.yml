@@ -1,3 +1,160 @@
 en:
-  test: "This is a test"
-  
+  system:
+    unknown_role: "\nUnknown user role\n\n"
+    exit_message: "Thank you, come back again!\n\n\n"
+    user_not_found: |
+
+      --------------------------------------------
+               Invalid phone number or password     
+      --------------------------------------------
+
+  auth:
+    login:
+      prompt_phone: "Enter phone number:"
+      prompt_password: "Enter password:"
+    signup:
+      prompt_username: "Enter your username:"
+      prompt_phone: "Enter your phone number:"
+      prompt_password: "Create a password:"
+      phone_exists: "Error: A user with phone number %{phone} is already registered!"
+      registering: "--- Registering... ---"
+      success: "User %{name} has been successfully registered!\n\n"
+
+  user:
+    main: |
+      Welcome to the PrintForge store!
+
+      A variety of 3D models and materials to suit your taste
+      Contact PrintForge!
+
+      Choose an action:
+        1 - log in
+        2 - sign up
+        3 - switch language to Ukrainian
+        4 - exit
+
+    store_menu:
+      greeting: "Hello, %{username}!"
+      body: |
+        Welcome to the PrintForge store!
+
+        Choose an action and enter its number:
+        1. View models catalog
+        2. View materials catalog
+        3. Customize an item and add to cart
+        4. View cart and checkout (%{count} items)
+        5. Return to main menu (switch account)
+      prompt: "Your choice: "
+      invalid_action: "\n[!] Unknown action, please enter a number from 1 to 5."
+
+    catalog:
+      models_header: "\n--- MODELS CATALOG ---"
+      model_item: "ID: %{id} | Name: %{title} | Base price: %{price} UAH"
+      materials_header: "\n--- MATERIALS CATALOG ---"
+      material_item: "ID: %{id} | Name: %{name} | Extra charge: %{price} UAH"
+      press_enter: "\nPress Enter to return to the menu..."
+
+    add_to_cart:
+      header: "--- ADD TO CART ---"
+      prompt_model: "Enter model ID (or 'back' to exit): "
+      model_not_found: "\n[!] Error: Model with this ID was not found!"
+      prompt_material: "Enter material ID: "
+      material_not_found: "\n[!] Error: Material with this ID was not found!"
+      prompt_color: "Enter item color: "
+      prompt_size: "Enter size (e.g., S, M, L): "
+      summary: |
+        ----------------------------------------
+        You selected:
+        Model: %{model_title} (%{model_price} UAH)
+        Material: %{material_name} (+%{material_price} UAH)
+        Color: %{color} | Size: %{size}
+        ----------------------------------------
+      prompt_quantity: "Enter quantity: "
+      invalid_quantity: "\n[!] Error: Quantity must be greater than 0!"
+      success: "\n[✓] Successfully added to cart!"
+
+    cart:
+      empty: "Your cart is empty."
+      header: "--- YOUR CART ---"
+      item_details: |
+        %{index}. Model: %{model} | Material: %{material}
+           Color: %{color} | Size: %{size} | Quantity: %{quantity} pcs.
+           Subtotal: %{subtotal} UAH
+        ----------------------------------------
+      total_sum: "TOTAL CART AMOUNT: %{total} UAH"
+      actions: |
+        ========================================
+        Actions:
+        1. Place order
+        2. Remove item from cart by number
+        3. Return to menu
+      prompt_action: "Choose an action: "
+      order_success: |
+
+        [✓] Order placed successfully!
+        Thank you for shopping at PrintForge!
+      prompt_delete_index: "Enter the item number to remove: "
+      item_deleted: "\n[!] Item '%{model}' removed from cart."
+      invalid_index: "\n[!] Invalid item number."
+      invalid_action: "\n[!] Unknown action."
+
+  admin:
+    greeting: |
+      Entering the admin mode...
+      Logged in as 'admin' successfully.
+      %{name} now can manage the program
+
+    main_menu:
+      greeting: "\n\nWelcome, %{name}!"
+      body: |
+        Choose an action:
+          1 - view all orders
+          2 - change order statuses
+          3 - return to main menu
+      leaving: "Leaving the admin mode...\n\n\n"
+
+    status_menu:
+      body: |
+
+
+
+        Order status management menu.
+        Choose an action:
+          1 - order statuses
+          2 - change statuses
+          3 - return to admin panel
+      returning: "Returning to the admin-panel...\n\n\n"
+
+    statuses:
+      new: "New"
+      printing: "Printing"
+      ready: "Ready"
+
+    orders:
+      empty: "Unfortunately, there are no orders from users yet."
+      full_table:
+        title: "Full list of orders"
+        headings:
+          - "Order ID"
+          - "User ID"
+          - "Color"
+          - "Size"
+          - "Quantity"
+          - "Final price"
+          - "Status"
+      short_table:
+        title: "Convenient and brief list of order statuses"
+        headings:
+          - "Order ID"
+          - "Cost"
+          - "Status"
+
+    change_status:
+      prompt_id: "\n\n\nSelect an order by its ID:"
+      order_found: "\n\nOrder with ID %{id} found."
+      order_not_found: "Order with this ID was not found."
+      current_status: "\nCurrent order status: %{status}"
+      no_actions: "No available actions for status '%{status}'."
+      confirm_prompt: "\nChange order status to %{new_status}?\n\n(yes/no)"
+      success: "Status successfully changed to %{new_status}!"
+      cancelled: "Status change cancelled."

@@ -3,27 +3,28 @@
 require 'yaml'
 require 'terminal-table'
 
-ORDERS_DB_FILE = 'orders.yml'
+require_relative 'entities/order.rb'
+require_relative 'console_helper.rb'
+
+MOVE_TO_PREV_PANEL = :back
 
 def run_admin_panel(user)
   print_admin_menu(user)
   admin_action = gets.chomp
   case admin_action
-  when '1'  
-    system('clear') || system('cls')
+  when '1'
+    clear_console
     show_orders_list
   when '2'
-    # меню зміна статусів замовлення
-    system('clear') || system('cls')
+    clear_console
     loop do
       result_for_status = run_status_overall_work
-      break if result_for_status == :back
+      break if result_for_status == MOVE_TO_PREV_PANEL
     end
   when '3'
-    # повернутись у main menu
-    system('clear') || system('cls')
-    puts "Leaving the admin mode...\n\n\n"
-    :back
+    clear_console
+    puts I18n.t('admin.main_menu.leaving')
+    MOVE_TO_PREV_PANEL
   end
 end
 
@@ -33,124 +34,99 @@ def run_status_overall_work
   admin_action = gets.chomp
   case admin_action
   when '1'
-    # переглянути усі статуси замовлення коротко
-    system('clear') || system('cls')
+    clear_console
     status_show
   when '2'
-    # зміна статусів замовлення
     run_change_status_work
   when '3'
-    # повернутись у admin-panel
-    system('clear') || system('cls')
-    puts "Returning to the admin-panel...\n\n\n"
-    :back
+    clear_console
+    puts I18n.t('admin.status_menu.returning')
+    MOVE_TO_PREV_PANEL
   end
 end
 
 def status_show
   orders = load_data(ORDERS_DB_FILE)
   if orders.any?
-    table = Terminal::Table.new do |t|
-      t.title = 'Зручний та короткий список статусів замовлень'
-      t.headings = ['ID замовлення', 'Вартість', 'Статус']
+    title = I18n.t('admin.orders.short_table.title')
+    headings = I18n.t('admin.orders.short_table.headings')
 
-      orders.each do |order|
-        t << [order['id'], order['final_price'], order['status']]
-      end
+    rows = orders.map do |order|
+      [
+        order['id'],
+        order['final_price'],
+        I18n.t("admin.statuses.#{order['status']}", default: order['status'])
+      ]
     end
 
-    puts table
+    puts render_table(title, headings, rows)
   else
-    puts 'Нажаль, замовлень від користувачів ще немає.'
+    puts I18n.t('admin.orders.empty')
   end
 end
 
 def status_change(orders, order)
-  puts "\nПоточний статус замовлення: #{order['status']}"
+  translated_status = I18n.t("admin.statuses.#{order['status']}", default: order['status'])
+  puts I18n.t('admin.change_status.current_status', status: translated_status)
 
   case order['status']
   when 'new'
-    puts "\nПеревести замовлення у статус printing?\n\n(yes/no)"
-    action = gets.chomp.downcase
-
-    if action == 'yes'
-      order['status'] = 'printing'
-      write_data(ORDERS_DB_FILE, orders)
-      puts "Статус успішно змінено на 'printing'!"
-    else
-      puts 'Зміну статусу скасовано.'
-    end
-
+    update_order_status(orders, order, 'printing')
   when 'printing'
-    puts "\nПеревести замовлення у статус ready?\n\n(yes/no)"
-    action = gets.chomp.downcase
-
-    if action == 'yes'
-      order['status'] = 'ready'
-      write_data(ORDERS_DB_FILE, orders)
-      puts "Статус успішно змінено на 'ready'!"
-    else
-      puts 'Зміну статусу скасовано.'
-    end
-
+    update_order_status(orders, order, 'ready')
   else
-    puts "Для статусу '#{order['status']}' немає доступних дій."
+    puts I18n.t('admin.change_status.no_actions', status: translated_status)
   end
 end
 
-#------------------------------------------------------
-
 def run_change_status_work
-  puts "\n\n\nОберіть замовлення по його id:"
-  id = gets.chomp.strip 
+  puts I18n.t('admin.change_status.prompt_id')
+  id = gets.chomp.strip
   orders = load_data(ORDERS_DB_FILE)
 
   if orders.any?
-    order = orders.find { |order| order['id'].to_s == id.to_s }
+    order = find_order_by_id(orders, id)
 
     if order
-      system('clear') || system('cls')
-      puts "\n\nЗамовлення з ID #{id} знайдено."
+      clear_console
+      puts I18n.t('admin.change_status.order_found', id: id)
       status_change(orders, order)
     else
-      puts 'Замовлення з таким ID не знайдено.'
+      puts I18n.t('admin.change_status.order_not_found')
     end
   else
-    puts 'Нажаль, замовлень від користувачів ще немає.'
+    puts I18n.t('admin.orders.empty')
   end
 end
 
 def show_orders_list
   orders = load_data(ORDERS_DB_FILE)
   if orders.any?
-    table = Terminal::Table.new do |t|
-      t.title = 'Повний список замовлень'
-      t.headings = ['ID замовлення', 'ID юзера', 'Колір', 'Розмір', 'Кількість', 'Фінальна ціна', 'Статус']
-      orders.each do |order|
-        t << [order['id'], order['user_id'], order['color'], order['size'], order['quantity'], order['final_price'],
-              order['status']]
-      end
+    title = I18n.t('admin.orders.full_table.title')
+    headings = I18n.t('admin.orders.full_table.headings')
+    rows = orders.map do |order|
+      [
+        order['id'],
+        order['user_id'],
+        order['color'],
+        order['size'],
+        order['quantity'],
+        order['final_price'],
+        I18n.t("admin.statuses.#{order['status']}", default: order['status'])
+      ]
     end
 
-    puts table
+    puts render_table(title, headings, rows)
   else
-    puts 'Нажаль, замовлень від користувачів ще немає.'
+    puts I18n.t('admin.orders.empty')
   end
 end
 
-
 def print_admin_menu(user)
-  puts "\n\nВітаємо, #{user['name']}!\n" \
-       "Оберіть дію:\n" \
-       "  1 - переглянути усі замовлення\n" \
-       "  2 - зміна статусів замовлення\n" \
-       "  3 - повернутись у main menu\n"
+  puts I18n.t('admin.main_menu.greeting', name: user['name'])
+  puts I18n.t('admin.main_menu.body')
 end
 
 def print_status_overall_menu
-  puts "\n\n\nМеню зміни orders status.\n" \
-       "Оберіть дію:\n" \
-       "  1 - статуси замовлень\n" \
-       "  2 - зміна статусів\n" \
-       "  3 - повернення до admin-panel\n"
+  puts I18n.t('admin.status_menu.body')
 end
