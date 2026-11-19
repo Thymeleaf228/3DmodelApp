@@ -10,7 +10,7 @@
   size: s
   quantity: 14
   final_price: 4424.0
-  status: new
+  status: ready
 - id: 2
   user_id: '777'
   username: User
@@ -22,4 +22,16 @@
   size: s
   quantity: 6
   final_price: 993.0
+  status: printing
+- id: 3
+  user_id: '67'
+  username: User
+  phone: N/A
+  user_info: User, N/A
+  model_id: 1
+  material_id: 1
+  color: '1'
+  size: s
+  quantity: 56
+  final_price: 9800.0
   status: new

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../database.rb'
-require_relative '../console_helper.rb'
-
 ORDERS_DB_FILE = 'orders.yml'
 
 def update_order_status(orders, order, new_status)

@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
-require_relative 'console_helper.rb'
-require_relative 'entities/user.rb'
-
 def log_in
   phone = ask_promt(I18n.t('auth.login.prompt_phone'))
   password = ask_promt(I18n.t('auth.login.prompt_password'))

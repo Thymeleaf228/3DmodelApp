@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'bcrypt'
-
 def load_data(filename)
   filepath = get_path(filename)
 

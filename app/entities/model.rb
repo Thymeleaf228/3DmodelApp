@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 class ModelEntity
   MODELS_FILE = 'db/models.yml'
 

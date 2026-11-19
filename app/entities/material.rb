@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 class MaterialEntity
   MATERIALS_FILE = 'db/materials.yml'
 

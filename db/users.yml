@@ -13,4 +13,9 @@
   name: '56'
   phone: '56'
   password_digest: "$2a$12$s1tS2kTDpyEgTpb2Z6ABAegvou4vyHT3gy9cbpKOZuWqjSsQdbnnO"
+  role: admin
+- id: 4
+  name: '67'
+  phone: '67'
+  password_digest: "$2a$12$URPGLp9gykcx0OlFVwl2cOE6FfEGVtdBZytOkf608sud.Rih5UAu2"
   role: user

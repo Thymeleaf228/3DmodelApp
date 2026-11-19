@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
-require_relative 'console_helper.rb'
-require_relative 'entities/user.rb'
-
 def sign_up
   clear_console
   name = ask_promt(I18n.t('auth.signup.prompt_username'))

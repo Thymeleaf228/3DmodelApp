@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require_relative 'entities/order'
-require_relative 'entities/model'
-require_relative 'entities/material'
-require_relative 'console_helper'
-
 SIZE_COEFFICIENTS = { 's' => 1.0, 'm' => 1.5, 'l' => 2.0 }.freeze
 
 def run_store_menu(logged_user, cart = [])

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../database.rb'
-
 USERS_DB_FILE = 'users.yml'
 
 USER_ROLES = {

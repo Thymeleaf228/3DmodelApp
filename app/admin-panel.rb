@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'terminal-table'
-
-require_relative 'entities/order.rb'
-require_relative 'console_helper.rb'
-
 MOVE_TO_PREV_PANEL = :back
 
 def run_admin_panel(user)

@@ -1,18 +1,10 @@
 # frozen_string_literal: true
 
-require 'i18n'
-require 'colorize'
+require_relative 'app/require.rb'
 
 I18n.load_path += Dir["#{File.expand_path('config/locales', __dir__)}/*.yml"]
 I18n.available_locales = %i[en ua]
 I18n.default_locale = :en
-
-require_relative 'app/signup.rb'
-require_relative 'app/login.rb'
-require_relative 'app/store.rb'
-require_relative 'app/admin-panel.rb'
-require_relative 'app/console_helper.rb'
-require_relative 'app/database.rb'
 
 def run
   print_main_menu
@@ -43,10 +35,10 @@ def login
   return 'user_not_found' if user.nil?
 
   case user['role']
-  when 'user'
+  when USER_ROLES[:user]
     clear_console
     run_store_menu(user['phone'])
-  when 'admin'
+  when USER_ROLES[:admin]
     admin_greeting(user)
     loop do
       admin_panel_result = run_admin_panel(user)
