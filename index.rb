@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'app/require.rb'
+require_relative 'app/require'
 
 I18n.load_path += Dir["#{File.expand_path('config/locales', __dir__)}/*.yml"]
 I18n.available_locales = %i[en ua]

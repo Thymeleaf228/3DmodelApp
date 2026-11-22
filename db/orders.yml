@@ -34,4 +34,16 @@
   size: s
   quantity: 56
   final_price: 9800.0
+  status: printing
+- id: 4
+  user_id: '56'
+  username: User
+  phone: N/A
+  user_info: User, N/A
+  model_id: 1
+  material_id: 1
+  color: red
+  size: l
+  quantity: 67
+  final_price: 21775.0
   status: new

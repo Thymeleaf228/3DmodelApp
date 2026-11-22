@@ -31,4 +31,3 @@ end
 def verify_password(hash_from_db, plain_password)
   BCrypt::Password.new(hash_from_db) == plain_password
 end
-

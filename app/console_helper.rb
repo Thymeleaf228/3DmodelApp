@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 YES_ANSWER = 'yes'
 NO_ANSWER = 'no'
 

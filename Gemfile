@@ -2,11 +2,9 @@
 
 source 'https://rubygems.org'
 gem 'bcrypt'
-gem 'i18n'
-gem 'terminal-table'
-group :development do
-  gem 'rubocop', require: false
-end
 gem 'colorize'
 gem 'ffaker'
+gem 'i18n'
 gem 'rake'
+gem 'rubocop'
+gem 'terminal-table'
